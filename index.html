@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vault Countdown</title>
+
+<!-- Fallout-style font -->
+<link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+
+<style>
+  body {
+    margin: 0;
+    background: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    font-family: 'VT323', monospace;
+    color: #f7d100;
+    font-size: 5rem;
+    text-align: center;
+  }
+
+  #countdown {
+    letter-spacing: 3px;
+  }
+
+  /* Vault animation hidden initially */
+  #vaultReveal { display: none; }
+  .vault-active {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top:0; left:0;
+    width:100%; height:100%;
+    background: radial-gradient(circle, #f7d100 0%, #000 60%);
+  }
+
+  .vault-door {
+    width: 220px;
+    height: 220px;
+    border: 18px solid #f7d100;
+    border-radius: 50%;
+    box-shadow: 0 0 40px #f7d100;
+    animation: spin 6s linear infinite;
+  }
+
+  .vault-text {
+    margin-top: 40px;
+    font-size: 2rem;
+    color: #f7d100;
+    font-weight: bold;
+    letter-spacing: 3px;
+  }
+
+  @keyframes spin { from{transform:rotate(0deg);} to{transform:rotate(360deg);} }
+</style>
+</head>
+<body>
+
+<div id="countdown">00d 00h 00m 00s</div>
+
+<div id="vaultReveal">
+  <div class="vault-door"></div>
+  <div class="vault-text">WELCOME TO THE VAULT</div>
+</div>
+
+<script>
+  const targetDate = Date.UTC(2026, 7, 13, 5, 0, 0); // August 13, 2026 05:00 UTC
+
+  function updateCountdown() {
+    const now = new Date().getTime();
+    const distance = targetDate - now;
+
+    if(distance <= 0){
+      clearInterval(interval);
+      document.getElementById("countdown").style.display = "none";
+      const reveal = document.getElementById("vaultReveal");
+      reveal.style.display = "flex";
+      reveal.classList.add("vault-active");
+      return;
+    }
+
+    const days = Math.floor(distance / (1000*60*60*24));
+    const hours = Math.floor((distance / (1000*60*60)) % 24);
+    const minutes = Math.floor((distance / (1000*60)) % 60);
+    const seconds = Math.floor((distance / 1000) % 60);
+
+    document.getElementById("countdown").textContent =
+      (days < 10 ? "0"+days : days) + "d " +
+      (hours < 10 ? "0"+hours : hours) + "h " +
+      (minutes < 10 ? "0"+minutes : minutes) + "m " +
+      (seconds < 10 ? "0"+seconds : seconds) + "s";
+  }
+
+  const interval = setInterval(updateCountdown, 1000);
+  updateCountdown();
+</script>
+
+</body>
+</html>
